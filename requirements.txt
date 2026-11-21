@@ -16,7 +16,7 @@ tqdm
 typer
 
 numpy # we use numpy as default data format. So we have to install numpy
-pandas # we use pandas as default data format. So we have to install pandas
+pandas<3.0 # pandarallel uses a pandas internal removed in 3.0; keep pandas as the default data format
 pandarallel # parallelize pandas
 matplotlib
 langchain

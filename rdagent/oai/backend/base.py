@@ -708,7 +708,10 @@ class APIBackend(ABC):
             all_response = parser.parse(all_response)
             if json_target_type:
                 # deepseek will enter this branch
-                TypeAdapter(json_target_type).validate_json(all_response)
+                # Pydantic supports string forward references at runtime, but its
+                # TypeAdapter TypeForm annotation excludes bare string aliases.
+                # Preserve the existing dynamic validation behavior for mypy.
+                TypeAdapter(cast(Any, json_target_type)).validate_json(all_response)
 
         # 4) code block extraction
         if code_block_language:

@@ -1,12 +1,13 @@
 name: Release
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   release_and_publish:
+    # Publishing must never be triggered merely by pushing to main.
+    # Repository release access and any publication approval remain owner-managed.
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
       issues: write

@@ -8,7 +8,23 @@
 
 import subprocess
 
-latest_tag = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"], text=True).strip()
+# CI uses shallow, tagless checkouts. Documentation must still be buildable,
+# without inventing a release tag or fetching untrusted upstream state.
+tag_result = subprocess.run(
+    ["git", "describe", "--tags", "--abbrev=0"],
+    check=False,
+    capture_output=True,
+    text=True,
+)
+latest_tag = tag_result.stdout.strip()
+if not latest_tag:
+    revision = subprocess.run(
+        ["git", "rev-parse", "--short=12", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    latest_tag = f"0+untagged.{revision}" if revision else "0+untagged"
 
 project = "RDAgent"
 copyright = "2024, Microsoft"
